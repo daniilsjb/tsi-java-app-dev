@@ -21,6 +21,7 @@ class PersonEvaluator {
             .forEach(System.out::println);
     }
 
+    // It's time to remember PECS!
     public <K> void groupAndPrint(Function<? super Person, ? extends K> classifier) {
         persons.stream()
             .collect(groupingBy(classifier, mapping(Person::getName, joining(", ", "[", "]"))))
