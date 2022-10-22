@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/meals")
 class MealController {
 
     private final MealRepository repository;
@@ -16,12 +18,12 @@ class MealController {
         this.repository = repository;
     }
 
-    @GetMapping("/meals")
+    @GetMapping
     public ResponseEntity<Iterable<Meal>> findMeals() {
         return ResponseEntity.ok(repository.findAll());
     }
 
-    @GetMapping("/meals/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Meal> findMeal(@PathVariable Long id) {
         return ResponseEntity.of(repository.findById(id));
     }
