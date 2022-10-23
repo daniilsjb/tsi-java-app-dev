@@ -1,2 +1,55 @@
-name: Continuous Integration
+name: Docker Build and Push
+on:
+  push:
+    branches:
+      - main
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./docker/practice_4/exercise_1/Dockerfile
+            image: daniilb/tsi-java-practice-4-exercise-1
+          - dockerfile: ./docker/practice_4/exercise_2/Dockerfile
+            image: daniilb/tsi-java-practice-4-exercise-2
+          - dockerfile: ./docker/practice_4/exercise_3/Dockerfile
+            image: daniilb/tsi-java-practice-4-exercise-3
+          - dockerfile: ./docker/practice_5/Dockerfile
+            image: daniilb/tsi-java-practice-5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '18'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: |
+          mvn clean package
+          find practice_4/exercise_1/target -name 'exercise_1-*.jar' | xargs -I '{}' mv {} ./docker/practice_4/exercise_1/app.jar
+          find practice_4/exercise_2/target -name 'exercise_2-*.jar' | xargs -I '{}' mv {} ./docker/practice_4/exercise_2/app.jar
+          find practice_4/exercise_3/target -name 'exercise_3-*.jar' | xargs -I '{}' mv {} ./docker/practice_4/exercise_3/app.jar
+          find practice_5/target -name 'practice_5-*.jar' | xargs -I '{}' mv {} ./docker/practice_5/app.jar
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Image and Push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ matrix.image }}:latest
