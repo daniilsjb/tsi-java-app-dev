@@ -2,6 +2,6 @@ FROM eclipse-temurin:18
 
 WORKDIR /app
 
-COPY "target/app.jar" .
+COPY "app.jar" .
 
 CMD ["java", "-jar", "app.jar"]
