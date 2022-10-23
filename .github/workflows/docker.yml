@@ -32,10 +32,10 @@ jobs:
       - name: Build with Maven
         run: |
           mvn clean package
-          find practice_4/exercise_1/target -name 'exercise_1-*.jar' | xargs -I '{}' mv {} ./docker/practice_4/exercise_1/app.jar
-          find practice_4/exercise_2/target -name 'exercise_2-*.jar' | xargs -I '{}' mv {} ./docker/practice_4/exercise_2/app.jar
-          find practice_4/exercise_3/target -name 'exercise_3-*.jar' | xargs -I '{}' mv {} ./docker/practice_4/exercise_3/app.jar
-          find practice_5/target -name 'practice_5-*.jar' | xargs -I '{}' mv {} ./docker/practice_5/app.jar
+          find ./practice_4/exercise_1/target -name 'exercise_1-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_4/exercise_1/app.jar
+          find ./practice_4/exercise_2/target -name 'exercise_2-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_4/exercise_2/app.jar
+          find ./practice_4/exercise_3/target -name 'exercise_3-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_4/exercise_3/app.jar
+          find ./practice_5/target -name 'practice_5-*.jar' | xargs -I '{}' mv {} ./docker/practice_5/app.jar
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
