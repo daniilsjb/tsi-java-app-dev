@@ -9,16 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - dockerfile: ./docker/practice_4/exercise_1/Dockerfile
-            image: daniilb/tsi-java-practice-4-exercise-1
-          - dockerfile: ./docker/practice_4/exercise_2/Dockerfile
-            image: daniilb/tsi-java-practice-4-exercise-2
-          - dockerfile: ./docker/practice_4/exercise_3/Dockerfile
-            image: daniilb/tsi-java-practice-4-exercise-3
-          - dockerfile: ./docker/practice_5/Dockerfile
-            image: daniilb/tsi-java-practice-5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,7 +26,7 @@ jobs:
           find ./practice_4/exercise_1/target -name 'exercise_1-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_4/exercise_1/app.jar
           find ./practice_4/exercise_2/target -name 'exercise_2-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_4/exercise_2/app.jar
           find ./practice_4/exercise_3/target -name 'exercise_3-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_4/exercise_3/app.jar
-          find ./practice_5/target -name 'practice_5-*.jar' | xargs -I '{}' mv {} ./docker/practice_5/app.jar
+          find ./practice_5/target -name 'practice_5-*.jar' | xargs -I '{}' mv -v {} ./docker/practice_5/app.jar
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -46,10 +37,34 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build Image and Push
+      - name: Build Practice-4/Exercise-1 Image and Push
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ${{ matrix.dockerfile }}
+          context: "{{defaultContext}}:docker:practice_4:exercise_1"
+          file: ./docker/practice_4/exercise_1/Dockerfile
           push: true
-          tags: ${{ matrix.image }}:latest
+          tags: daniilb/tsi-java-practice-4-exercise-1:latest
+
+      - name: Build Practice-4/Exercise-2 Image and Push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:docker:practice_4:exercise_2"
+          file: ./docker/practice_4/exercise_2/Dockerfile
+          push: true
+          tags: daniilb/tsi-java-practice-4-exercise-2:latest
+
+      - name: Build Practice-4/Exercise-3 Image and Push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:docker:practice_4:exercise_3"
+          file: ./docker/practice_4/exercise_3/Dockerfile
+          push: true
+          tags: daniilb/tsi-java-practice-4-exercise-3:latest
+
+      - name: Build Practice-5 Image and Push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:docker:practice_5"
+          file: ./docker/practice_5/Dockerfile
+          push: true
+          tags: daniilb/tsi-java-practice-5:latest
