@@ -29,6 +29,8 @@ class PersonEvaluator {
     }
 
     public double getAverageAge() {
+        // In principle, it may have been better to return an OptionalDouble here directly and let the client
+        // code handle the empty case. But, for the purposes of this exercise, this code is a bit simpler.
         return persons.stream()
             .mapToDouble(Person::getAge)
             .average()
